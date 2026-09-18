@@ -1041,12 +1041,38 @@ void Test_LEDDriver_RGB(int firstChannel) {
 	//SELFTEST_ASSERT_CHANNEL(firstChannel+2, 666);
 
 }
+void Test_LEDDriver_CW_ClampToCTRange() {
+	// reset whole device
+	SIM_ClearOBK(0);
+
+	// CW bulb on channels 3 and 4, with a narrowed color temperature range
+	PIN_SetPinRoleForPinIndex(24, IOR_PWM);
+	PIN_SetPinChannelForPinIndex(24, 3);
+	PIN_SetPinRoleForPinIndex(26, IOR_PWM);
+	PIN_SetPinChannelForPinIndex(26, 4);
+
+	CMD_ExecuteCommand("led_enableAll 1", 0);
+	CMD_ExecuteCommand("CTRange 200 400", 0);
+
+	// led_temperature never reports a temperature outside the range
+	CMD_ExecuteCommand("led_temperature 153", 0);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 200.0f);
+	CMD_ExecuteCommand("led_temperature 500", 0);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 400.0f);
+	CMD_ExecuteCommand("led_temperature 300", 0);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 300.0f);
+
+	// CT is the Tasmota command, it reports the value it was given
+	CMD_ExecuteCommand("CT 153", 0);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 153.0f);
+}
 void Test_LEDDriver() {
 
 	Test_LEDDriver_SingleColor();
 	Test_LEDDriver_CW_Alternate();
 	Test_LEDDriver_CW();
 	Test_LEDDriver_CW_OtherChannels();
+	Test_LEDDriver_CW_ClampToCTRange();
 	// support both indexing from 0 and 1
 	Test_LEDDriver_RGB(0);
 	Test_LEDDriver_RGB(1);

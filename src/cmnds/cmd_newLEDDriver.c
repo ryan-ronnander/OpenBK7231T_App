@@ -921,6 +921,14 @@ static commandResult_t temperature(const void *context, const char *cmd, const c
 
 
 	tmp = Tokenizer_GetArgInteger(0);
+	// keep led_temperature inside CTRange, so the temperature reported back to HA is one
+	// the bulb can show. CT keeps Tasmota's behavior of reporting the value it was given
+	if (wal_stricmp(cmd, "CT")) {
+		if (tmp < led_temperature_min)
+			tmp = led_temperature_min;
+		if (tmp > led_temperature_max)
+			tmp = led_temperature_max;
+	}
 	LED_SetTemperature(tmp, 1);
 	return CMD_RES_OK;
 	//}
