@@ -371,7 +371,7 @@ commandResult_t SHT3X_SetAlertCmd(const void* context, const char* cmd, const ch
 {
 	float temperatureLowSet, temperatureLowClear, temperatureHighClear, temperatureHighSet;
 	float humidityLowSet, humidityLowClear, humidityHighClear, humidityHighSet;
-	Tokenizer_TokenizeString(args, TOKENIZER_ALLOW_QUOTES | TOKENIZER_DONT_EXPAND);
+	Tokenizer_TokenizeString(args, TOKENIZER_ALLOW_QUOTES);
 	if (Tokenizer_CheckArgsCountAndPrintWarning(cmd, 4)) {
 		return CMD_RES_NOT_ENOUGH_ARGUMENTS;
 	}
