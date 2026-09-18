@@ -214,8 +214,8 @@ void Test_MQTT_LED_CW() {
 	// if assert has passed, we can clear SIM MQTT history, it's no longer needed
 	SIM_ClearMQTTHistory();
 
-	CMD_ExecuteCommand("led_temperature 153", 0);
-	SELFTEST_ASSERT_HAD_MQTT_PUBLISH_STR("myTestDevice/led_temperature/get", "153", false);
+	CMD_ExecuteCommand("led_temperature 154", 0);
+	SELFTEST_ASSERT_HAD_MQTT_PUBLISH_STR("myTestDevice/led_temperature/get", "154", false);
 	// if assert has passed, we can clear SIM MQTT history, it's no longer needed
 	SIM_ClearMQTTHistory();
 
@@ -431,8 +431,8 @@ void Test_MQTT_LED_RGBCW() {
 	// if assert has passed, we can clear SIM MQTT history, it's no longer needed
 	SIM_ClearMQTTHistory();
 
-	CMD_ExecuteCommand("led_temperature 153", 0);
-	SELFTEST_ASSERT_HAD_MQTT_PUBLISH_STR("fakeRGBCWbulb/led_temperature/get", "153", false);
+	CMD_ExecuteCommand("led_temperature 154", 0);
+	SELFTEST_ASSERT_HAD_MQTT_PUBLISH_STR("fakeRGBCWbulb/led_temperature/get", "154", false);
 	// if assert has passed, we can clear SIM MQTT history, it's no longer needed
 	SIM_ClearMQTTHistory();
 

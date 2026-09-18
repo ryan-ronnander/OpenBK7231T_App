@@ -15,7 +15,7 @@ void Test_Http_LED_CW() {
 
 	CMD_ExecuteCommand("led_enableAll 1", 0);
 	CMD_ExecuteCommand("led_dimmer 100", 0);
-	CMD_ExecuteCommand("led_temperature 153", 0);
+	CMD_ExecuteCommand("led_temperature 154", 0);
 
 	SELFTEST_ASSERT_CHANNEL(1, 100);
 	SELFTEST_ASSERT_CHANNEL(2, 0);
@@ -36,21 +36,21 @@ void Test_Http_LED_CW() {
 	Test_FakeHTTPClientPacket_JSON("cm?cmnd=STATUS");
 	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "Dimmer", 100);
 	SELFTEST_ASSERT_JSON_VALUE_STRING("StatusSTS", "POWER", "ON");
-	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "CT", 153);
+	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "CT", 154);
 
 	CMD_ExecuteCommand("led_enableAll 0", 0);
 	// StatusSTS contains POWER and Dimmer
 	Test_FakeHTTPClientPacket_JSON("cm?cmnd=STATUS");
 	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "Dimmer", 100);
 	SELFTEST_ASSERT_JSON_VALUE_STRING("StatusSTS", "POWER", "OFF");
-	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "CT", 153);
+	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "CT", 154);
 
 	CMD_ExecuteCommand("led_dimmer 61", 0);
 	// StatusSTS contains POWER and Dimmer
 	Test_FakeHTTPClientPacket_JSON("cm?cmnd=STATUS");
 	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "Dimmer", 61);
 	SELFTEST_ASSERT_JSON_VALUE_STRING("StatusSTS", "POWER", "OFF");
-	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "CT", 153);
+	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "CT", 154);
 
 	// HTML page must contains dimmer, but no RGB and no temeprature controls
 	Test_FakeHTTPClientPacket_GET("index");
@@ -66,7 +66,7 @@ void Test_Http_LED_CW() {
 	Test_FakeHTTPClientPacket_JSON("cm?cmnd=STATUS");
 	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "Dimmer", 61);
 	SELFTEST_ASSERT_JSON_VALUE_STRING("StatusSTS", "POWER", "ON");
-	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "CT", 153);
+	SELFTEST_ASSERT_JSON_VALUE_INTEGER("StatusSTS", "CT", 154);
 
 	CMD_ExecuteCommand("led_temperature 500", 0);
 	// StatusSTS contains POWER and Dimmer
