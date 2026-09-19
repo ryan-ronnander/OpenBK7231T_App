@@ -1660,6 +1660,11 @@ static commandResult_t ctRange(const void *context, const char *cmd, const char 
 
 	led_temperature_min = Tokenizer_GetArgFloat(0);
 	led_temperature_max = Tokenizer_GetArgFloat(1);
+	// flag 12 restores a temperature before this runs, so it can be outside the new range
+	if (led_temperature_current < led_temperature_min)
+		led_temperature_current = led_temperature_min;
+	if (led_temperature_current > led_temperature_max)
+		led_temperature_current = led_temperature_max;
 	// update the warm/cool split that was computed against the old range
 	LED_SetTemperature(led_temperature_current, false);
 	if (g_lightMode == Light_Temperature) {

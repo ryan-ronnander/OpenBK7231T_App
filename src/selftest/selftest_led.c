@@ -1041,6 +1041,34 @@ void Test_LEDDriver_CW_SingleValueRange() {
 	SELFTEST_ASSERT_CHANNEL(3, 100);
 	SELFTEST_ASSERT_CHANNEL(4, 100);
 }
+void Test_LEDDriver_CW_CTBoundedRange() {
+	// reset whole device
+	SIM_ClearOBK(0);
+
+	PIN_SetPinRoleForPinIndex(24, IOR_PWM);
+	PIN_SetPinChannelForPinIndex(24, 3);
+	PIN_SetPinRoleForPinIndex(26, IOR_PWM);
+	PIN_SetPinChannelForPinIndex(26, 4);
+
+	CMD_ExecuteCommand("led_enableAll 1", 0);
+
+	// the range narrowing under a set temperature is what a startup CTRange hits, with
+	// flag 12 having already restored one from flash
+	CMD_ExecuteCommand("CTRange 154 500", 0);
+	CMD_ExecuteCommand("led_temperature 154", 0);
+	SELFTEST_ASSERT_FLOATCOMPARE(LED_GetTemperature(), 154);
+
+	CMD_ExecuteCommand("CTRange 400 500", 0);
+	SELFTEST_ASSERT_FLOATCOMPARE(LED_GetTemperature(), 400);
+
+	CMD_ExecuteCommand("CTRange 154 300", 0);
+	SELFTEST_ASSERT_FLOATCOMPARE(LED_GetTemperature(), 300);
+
+	CMD_ExecuteCommand("CTRange 500 500", 0);
+	SELFTEST_ASSERT_FLOATCOMPARE(LED_GetTemperature(), 500);
+	SELFTEST_ASSERT_CHANNEL(3, 100);
+	SELFTEST_ASSERT_CHANNEL(4, 100);
+}
 void Test_LEDDriver() {
 
 	Test_LEDDriver_SingleColor();
@@ -1048,6 +1076,7 @@ void Test_LEDDriver() {
 	Test_LEDDriver_CW();
 	Test_LEDDriver_CW_OtherChannels();
 	Test_LEDDriver_CW_SingleValueRange();
+	Test_LEDDriver_CW_CTBoundedRange();
 	// support both indexing from 0 and 1
 	Test_LEDDriver_RGB(0);
 	Test_LEDDriver_RGB(1);
