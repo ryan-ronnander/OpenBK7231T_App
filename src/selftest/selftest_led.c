@@ -370,17 +370,36 @@ void Test_LEDDriver_CT_ColorIndices() {
 	PIN_SetPinChannelForPinIndex(26, 4);
 	CMD_ExecuteCommand("led_enableAll 1", 0);
 
-	// the three special indices past the RGB palette each select a fixed temperature.
-	// 14 used to be defined as 13, so it fell through to the warm branch and CT 327 was
-	// unreachable - a device group asking for it wrapped around to the first palette color.
+	// the three special indices past the RGB palette each select a temperature.
+	// 14 used to be defined as 13, so it fell through to the warm branch and the middle
+	// index was unreachable - a device group asking for it wrapped around to the first
+	// palette color.
 	LED_SetColorByIndex(12);
-	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 153.0f);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 154.0f);
 
 	LED_SetColorByIndex(13);
 	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 500.0f);
 
 	LED_SetColorByIndex(14);
 	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 327.0f);
+
+	// they track CTRange, so they can never select a temperature the bulb cannot show.
+	// this is the warm-only bulb case - one point, so all three land on it
+	CMD_ExecuteCommand("CTRange 154 370", 0);
+	LED_SetColorByIndex(12);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 154.0f);
+	LED_SetColorByIndex(13);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 370.0f);
+	LED_SetColorByIndex(14);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 262.0f);
+
+	CMD_ExecuteCommand("CTRange 500 500", 0);
+	LED_SetColorByIndex(12);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 500.0f);
+	LED_SetColorByIndex(13);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 500.0f);
+	LED_SetColorByIndex(14);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 500.0f);
 }
 void Test_LEDDriver_Palette() {
 	// reset whole device

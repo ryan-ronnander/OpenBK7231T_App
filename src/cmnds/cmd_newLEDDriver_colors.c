@@ -66,12 +66,12 @@ static byte g_color[][3] = {
 	{ 255, 192, 203 },
 	// 11 = white (using RGB channels CT 153)
 	{ 255, 255, 255 },
-	// 12	= 	COLD WHITE (CT 153)
-#define SPECIAL_INDEX_CT153				12
-	// 13	= WARM white (CT 500)
-#define SPECIAL_INDEX_CT500				13
-	// 14	= CT 327
-#define SPECIAL_INDEX_CT327				14
+	// 12	= 	COLD WHITE (coldest the configured CTRange allows)
+#define SPECIAL_INDEX_CT_COLD			12
+	// 13	= WARM white (warmest the configured CTRange allows)
+#define SPECIAL_INDEX_CT_WARM			13
+	// 14	= the midpoint of the configured CTRange
+#define SPECIAL_INDEX_CT_MID			14
 
 };
 // https://www.elektroda.com/rtvforum/viewtopic.php?p=20280817#20280817
@@ -109,22 +109,24 @@ void LED_SetColorByIndex(int index) {
 	const byte *c;
 
 	// special CT indices
-	if (index == SPECIAL_INDEX_CT500) {
-		LED_SetTemperature(500, true);
+	// these three follow CTRange rather than fixed mireds, so they can never ask for a
+	// temperature the bulb cannot show and then report it back
+	if (index == SPECIAL_INDEX_CT_WARM) {
+		LED_SetTemperature((int)led_temperature_max, true);
 		if (LED_GetEnableAll() == 0) {
 			LED_SetEnableAll(1);
 		}
 		return;
 	}
-	if (index == SPECIAL_INDEX_CT327) {
-		LED_SetTemperature(327, true);
+	if (index == SPECIAL_INDEX_CT_MID) {
+		LED_SetTemperature((int)((led_temperature_min + led_temperature_max) * 0.5f), true);
 		if (LED_GetEnableAll() == 0) {
 			LED_SetEnableAll(1);
 		}
 		return;
 	}
-	if (index == SPECIAL_INDEX_CT153) {
-		LED_SetTemperature(153, true);
+	if (index == SPECIAL_INDEX_CT_COLD) {
+		LED_SetTemperature((int)led_temperature_min, true);
 		if (LED_GetEnableAll() == 0) {
 			LED_SetEnableAll(1);
 		}
