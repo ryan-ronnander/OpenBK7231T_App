@@ -71,7 +71,7 @@ static byte g_color[][3] = {
 	// 13	= WARM white (CT 500)
 #define SPECIAL_INDEX_CT500				13
 	// 14	= CT 327
-#define SPECIAL_INDEX_CT327				13
+#define SPECIAL_INDEX_CT327				14
 
 };
 // https://www.elektroda.com/rtvforum/viewtopic.php?p=20280817#20280817

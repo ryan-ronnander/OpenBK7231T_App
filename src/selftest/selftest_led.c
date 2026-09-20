@@ -359,6 +359,29 @@ void Test_LEDDriver_CW_Alternate() {
 }
 
 
+void Test_LEDDriver_CT_ColorIndices() {
+	// reset whole device
+	SIM_ClearOBK(0);
+
+	// CW bulb, cool on channel 3 and warm on channel 4
+	PIN_SetPinRoleForPinIndex(24, IOR_PWM);
+	PIN_SetPinChannelForPinIndex(24, 3);
+	PIN_SetPinRoleForPinIndex(26, IOR_PWM);
+	PIN_SetPinChannelForPinIndex(26, 4);
+	CMD_ExecuteCommand("led_enableAll 1", 0);
+
+	// the three special indices past the RGB palette each select a fixed temperature.
+	// 14 used to be defined as 13, so it fell through to the warm branch and CT 327 was
+	// unreachable - a device group asking for it wrapped around to the first palette color.
+	LED_SetColorByIndex(12);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 153.0f);
+
+	LED_SetColorByIndex(13);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 500.0f);
+
+	LED_SetColorByIndex(14);
+	SELFTEST_ASSERT_EXPRESSION("$led_temperature", 327.0f);
+}
 void Test_LEDDriver_Palette() {
 	// reset whole device
 	SIM_ClearOBK(0);
@@ -1029,6 +1052,7 @@ void Test_LEDDriver() {
 	Test_LEDDriver_RGB(1);
 	Test_LEDDriver_RGBCW();
 	Test_LEDDriver_Palette();
+	Test_LEDDriver_CT_ColorIndices();
 	Test_LEDDriver_BP5758_RGBCW();
 	Test_LEDDriver_SM2235_RGBCW();
 }
